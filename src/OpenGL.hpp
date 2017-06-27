@@ -14,7 +14,7 @@
 	typedef int GLintptr;
 #endif
 
-typedef char GLbyte;
+typedef signed char GLbyte;
 typedef char GLchar;
 typedef double GLclampd;
 typedef double GLdouble;
@@ -22,6 +22,7 @@ typedef float GLclampf;
 typedef float GLfloat;
 typedef int GLint;
 typedef int GLsizei;
+typedef int GLfixed;
 typedef long long int GLint64;
 typedef short GLshort;
 typedef struct __GLsync * GLsync;
@@ -34,6 +35,8 @@ typedef unsigned long long int GLuint64;
 typedef unsigned short GLhalf;
 typedef unsigned short GLushort;
 typedef void GLvoid;
+typedef struct _cl_context *cl_context;
+typedef struct _cl_event   *cl_event;
 
 typedef void (* GLDEBUGPROC) (GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar * message, const void * userParam);
 

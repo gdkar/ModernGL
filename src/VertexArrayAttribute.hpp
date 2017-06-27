@@ -8,6 +8,8 @@
 #include "Attribute.hpp"
 
 struct MGLVertexArrayAttribute : public MGLObject {
+	const GLMethods * gl;
+
 	MGLAttribute * attribute;
 
 	int vertex_array_obj;

@@ -1723,6 +1723,30 @@ MGLRenderbuffer * MGLContext_depth_renderbuffer(MGLContext * self, PyObject * ar
 	return renderbuffer;
 }
 
+PyObject * MGLContext_get_proc_address(MGLContext * self, PyObject * args) {
+
+	PyObject * method;
+	int args_ok = PyArg_ParseTuple(
+		args,
+		"O",
+		&method
+	);
+    if(!args_ok) {
+        return 0;
+    }
+	if (!PyUnicode_Check(method)) {
+		MGLError_Set("the method must be a string not %s", Py_TYPE(method)->tp_name);
+		return 0;
+	}
+	const GLMethods & gl = self->gl;
+	void *proc = gl.GetProcAddress(PyUnicode_AsUTF8(method));
+	if(proc) {
+		return PyLong_FromLong((intptr_t)proc);
+	} else {
+		Py_RETURN_NONE;
+	}
+
+}
 MGLComputeShader * MGLContext_compute_shader(MGLContext * self, PyObject * args) {
 	PyObject * source;
 
@@ -1801,7 +1825,7 @@ PyMethodDef MGLContext_tp_methods[] = {
 	{"compute_shader", (PyCFunction)MGLContext_compute_shader, METH_VARARGS, 0},
 
 	{"release", (PyCFunction)MGLContext_release, METH_NOARGS, 0},
-
+	{"get_proc_address", (PyCFunction)MGLContext_get_proc_address, METH_VARARGS, 0},
 	{0},
 };
 
@@ -2555,43 +2579,43 @@ PyGetSetDef MGLContext_tp_getseters[] = {
 
 PyTypeObject MGLContext_Type = {
 	PyVarObject_HEAD_INIT(0, 0)
-	"mgl.Context",                                          // tp_name
-	sizeof(MGLContext),                                     // tp_basicsize
-	0,                                                      // tp_itemsize
-	(destructor)MGLContext_tp_dealloc,                      // tp_dealloc
-	0,                                                      // tp_print
-	0,                                                      // tp_getattr
-	0,                                                      // tp_setattr
-	0,                                                      // tp_reserved
-	0,                                                      // tp_repr
-	0,                                                      // tp_as_number
-	0,                                                      // tp_as_sequence
-	0,                                                      // tp_as_mapping
-	0,                                                      // tp_hash
-	0,                                                      // tp_call
-	0,                                                      // tp_str
-	0,                                                      // tp_getattro
-	0,                                                      // tp_setattro
-	0,                                                      // tp_as_buffer
-	Py_TPFLAGS_DEFAULT,                                     // tp_flags
-	0,                                                      // tp_doc
-	0,                                                      // tp_traverse
-	0,                                                      // tp_clear
-	0,                                                      // tp_richcompare
-	0,                                                      // tp_weaklistoffset
-	0,                                                      // tp_iter
-	0,                                                      // tp_iternext
-	MGLContext_tp_methods,                                  // tp_methods
-	0,                                                      // tp_members
-	MGLContext_tp_getseters,                                // tp_getset
-	0,                                                      // tp_base
-	0,                                                      // tp_dict
-	0,                                                      // tp_descr_get
-	0,                                                      // tp_descr_set
-	0,                                                      // tp_dictoffset
-	(initproc)MGLContext_tp_init,                           // tp_init
-	0,                                                      // tp_alloc
-	MGLContext_tp_new,                                      // tp_new
+	"mgl.Context",											// tp_name
+	sizeof(MGLContext),										// tp_basicsize
+	0,														// tp_itemsize
+	(destructor)MGLContext_tp_dealloc,						// tp_dealloc
+	0,														// tp_print
+	0,														// tp_getattr
+	0,														// tp_setattr
+	0,														// tp_reserved
+	0,														// tp_repr
+	0,														// tp_as_number
+	0,														// tp_as_sequence
+	0,														// tp_as_mapping
+	0,														// tp_hash
+	0,														// tp_call
+	0,														// tp_str
+	0,														// tp_getattro
+	0,														// tp_setattro
+	0,														// tp_as_buffer
+	Py_TPFLAGS_DEFAULT,										// tp_flags
+	0,														// tp_doc
+	0,														// tp_traverse
+	0,														// tp_clear
+	0,														// tp_richcompare
+	0,														// tp_weaklistoffset
+	0,														// tp_iter
+	0,														// tp_iternext
+	MGLContext_tp_methods,									// tp_methods
+	0,														// tp_members
+	MGLContext_tp_getseters,								// tp_getset
+	0,														// tp_base
+	0,														// tp_dict
+	0,														// tp_descr_get
+	0,														// tp_descr_set
+	0,														// tp_dictoffset
+	(initproc)MGLContext_tp_init,							// tp_init
+	0,														// tp_alloc
+	MGLContext_tp_new,										// tp_new
 };
 
 MGLContext * MGLContext_New() {
