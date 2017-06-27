@@ -661,7 +661,7 @@ struct GLMethods {
 	PROC_glViewportIndexedfv ViewportIndexedfv;
 
 	bool load();
-
+    void *GetProcAddress(const char *method) const;
 private:
 	GLMethods(const GLMethods & copy);
 	void operator = (const GLMethods & rhs);

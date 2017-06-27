@@ -95,6 +95,20 @@ void * LoadMethod(const char * method) {
 
 #endif
 
+void *GLMethods::GetProcAddress(const char *method) const {
+    static const char prefix[] = PREFIX;
+    void *proc = LoadMethod(method);
+    if(proc) {
+        return proc;
+    }
+    char buf[1026] = PREFIX;
+    strncpy(buf, method, sizeof(buf) - sizeof(prefix));
+    proc = LoadMethod(buf);
+    if(proc) {
+        return proc;
+    }
+    return 0;
+}
 bool GLMethods::load() {
 	this->ActiveShaderProgram = (PROC_glActiveShaderProgram)LoadMethod(PREFIX "glActiveShaderProgram");
 	this->ActiveTexture = (PROC_glActiveTexture)LoadMethod(PREFIX "glActiveTexture");
