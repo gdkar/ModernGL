@@ -4,7 +4,7 @@
 #include "Buffer.hpp"
 
 PyObject * MGLVertexArrayAttribute_tp_new(PyTypeObject * type, PyObject * args, PyObject * kwargs) {
-	MGLVertexArrayAttribute * self = (MGLVertexArrayAttribute *)type->tp_alloc(type, 0);
+	auto self = (MGLVertexArrayAttribute *)type->tp_alloc(type, 0);
 
 	#ifdef MGL_VERBOSE
 	printf("MGLVertexArrayAttribute_tp_new %p\n", self);
@@ -110,9 +110,8 @@ PyObject * MGLVertexArrayAttribute_get_location(MGLVertexArrayAttribute * self, 
 }
 
 PyObject * MGLVertexArrayAttribute_get_divisor(MGLVertexArrayAttribute * self, void * closure) {
-	int divisor = 0;
-
-	const GLMethods & gl = self->attribute->context->gl;
+	auto divisor = 0;
+	auto && gl = self->attribute->context->gl;
 
 	gl.BindVertexArray(self->vertex_array_obj);
 	gl.GetVertexAttribiv(self->location, GL_VERTEX_ATTRIB_ARRAY_DIVISOR, &divisor);
@@ -121,9 +120,9 @@ PyObject * MGLVertexArrayAttribute_get_divisor(MGLVertexArrayAttribute * self, v
 }
 
 PyObject * MGLVertexArrayAttribute_get_stride(MGLVertexArrayAttribute * self, void * closure) {
-	int stride = 0;
+	auto stride = 0;
 
-	const GLMethods & gl = self->attribute->context->gl;
+	auto && gl = self->attribute->context->gl;
 
 	gl.BindVertexArray(self->vertex_array_obj);
 	gl.GetVertexAttribiv(self->location, GL_VERTEX_ATTRIB_ARRAY_STRIDE, &stride);
@@ -132,9 +131,9 @@ PyObject * MGLVertexArrayAttribute_get_stride(MGLVertexArrayAttribute * self, vo
 }
 
 PyObject * MGLVertexArrayAttribute_get_enabled(MGLVertexArrayAttribute * self, void * closure) {
-	int enabled = 0;
+	auto enabled = 0;
 
-	const GLMethods & gl = self->attribute->context->gl;
+	auto && gl = self->attribute->context->gl;
 
 	gl.BindVertexArray(self->vertex_array_obj);
 	gl.GetVertexAttribiv(self->location, GL_VERTEX_ATTRIB_ARRAY_ENABLED, &enabled);
@@ -209,7 +208,7 @@ PyTypeObject MGLVertexArrayAttribute_Type = {
 };
 
 MGLVertexArrayAttribute * MGLVertexArrayAttribute_New() {
-	MGLVertexArrayAttribute * self = (MGLVertexArrayAttribute *)MGLVertexArrayAttribute_tp_new(&MGLVertexArrayAttribute_Type, 0, 0);
+	auto  self = (MGLVertexArrayAttribute *)MGLVertexArrayAttribute_tp_new(&MGLVertexArrayAttribute_Type, 0, 0);
 	return self;
 }
 

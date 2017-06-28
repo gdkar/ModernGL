@@ -3,7 +3,7 @@
 #include "Error.hpp"
 
 PyObject * MGLPrimitive_tp_new(PyTypeObject * type, PyObject * args, PyObject * kwargs) {
-	MGLPrimitive * self = (MGLPrimitive *)type->tp_alloc(type, 0);
+	auto self = (MGLPrimitive *)type->tp_alloc(type, 0);
 
 	// #ifdef MGL_VERBOSE
 	// printf("MGLPrimitive_tp_new %p\n", self);
@@ -91,7 +91,7 @@ PyTypeObject MGLPrimitive_Type = {
 };
 
 MGLPrimitive * MGLPrimitive_New() {
-	MGLPrimitive * self = (MGLPrimitive *)MGLPrimitive_tp_new(&MGLPrimitive_Type, 0, 0);
+	auto self = (MGLPrimitive *)MGLPrimitive_tp_new(&MGLPrimitive_Type, 0, 0);
 	return self;
 }
 

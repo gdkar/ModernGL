@@ -10,7 +10,7 @@ inline void clean_glsl_name(char * name, int & name_len) {
 	name[name_len] = 0;
 }
 
-inline int swizzle_from_char(char c) {
+constexpr int swizzle_from_char(char c) {
 	switch (c) {
 		case 'R':
 		case 'r':
@@ -46,7 +46,7 @@ inline int swizzle_from_char(char c) {
 	return -1;
 }
 
-inline char char_from_swizzle(int c) {
+constexpr char char_from_swizzle(int c) {
 	switch (c) {
 		case GL_RED:
 			return 'R';

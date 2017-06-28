@@ -3,7 +3,7 @@
 #include "Error.hpp"
 
 PyObject * MGLInvalidObject_tp_new(PyTypeObject * type, PyObject * args, PyObject * kwargs) {
-	MGLInvalidObject * self = (MGLInvalidObject *)type->tp_alloc(type, 0);
+	auto self = (MGLInvalidObject *)type->tp_alloc(type, 0);
 
 	if (self) {
 	}

@@ -3,7 +3,7 @@
 #include "Error.hpp"
 
 void AddToLog(PyObject ** pstr, const char * function) {
-	PyObject * name = PyUnicode_FromFormat("- %s\n", function);
+	auto  name = PyUnicode_FromFormat("- %s\n", function);
 	PyUnicode_Append(pstr, name);
 	Py_DECREF(name);
 }
@@ -72,19 +72,15 @@ void * LoadMethod(const char * method) {
 typedef const void * (* PROC_glXGetProcAddress)(const char *);
 
 void * LoadMethod(const char * method) {
-	static void * libgl = dlopen("libGL.so.1", RTLD_LAZY);
-	static PROC_glXGetProcAddress glXGetProcAddress = (PROC_glXGetProcAddress)dlsym(libgl, "glXGetProcAddress");
+	static auto libgl = dlopen("libGL.so.1", RTLD_LAZY);
+	static auto glXGetProcAddress = (PROC_glXGetProcAddress)dlsym(libgl, "glXGetProcAddress");
 
-	void * proc = (void *)dlsym(libgl, method);
-
-	if (proc) {
+	if(auto proc = (void *)dlsym(libgl, method)) {
 		// printf("%s found!\n", method);
 		return proc;
 	}
 
-	proc = (void *)glXGetProcAddress(method);
-
-	if (proc) {
+	if(auto proc = (void *)glXGetProcAddress(method)) {
 		// printf("%s found!\n", method);
 		return proc;
 	}
@@ -98,14 +94,12 @@ void * LoadMethod(const char * method) {
 =======
 void *GLMethods::GetProcAddress(const char *method) const {
     static const char prefix[] = PREFIX;
-    void *proc = LoadMethod(method);
-    if(proc) {
+    if(auto proc = LoadMethod(method)) {
         return proc;
     }
     char buf[1026] = PREFIX;
     strncpy(buf, method, sizeof(buf) - sizeof(prefix));
-    proc = LoadMethod(buf);
-    if(proc) {
+    if(auto proc = LoadMethod(buf)) {
         return proc;
     }
     return 0;
@@ -1237,7 +1231,7 @@ bool GLMethods::load() {
 	}
 
 	if (PyUnicode_GET_SIZE(loading_log) != 0) {
-		PyObject * message = PyUnicode_FromFormat("Error loading some OpenGL functions:\n");
+		auto message = PyUnicode_FromFormat("Error loading some OpenGL functions:\n");
 		PyUnicode_Append(&message, loading_log);
 		Py_DECREF(loading_log);
 

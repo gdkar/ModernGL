@@ -28,7 +28,7 @@ const char * SHADER_NAME_UNDERLINE[] = {
 };
 
 PyObject * MGLShader_tp_new(PyTypeObject * type, PyObject * args, PyObject * kwargs) {
-	MGLShader * self = (MGLShader *)type->tp_alloc(type, 0);
+	auto  self = (MGLShader *)type->tp_alloc(type, 0);
 
 	#ifdef MGL_VERBOSE
 	printf("MGLShader_tp_new %p\n", self);
@@ -132,7 +132,7 @@ PyTypeObject MGLShader_Type = {
 };
 
 MGLShader * MGLShader_New() {
-	MGLShader * self = (MGLShader *)MGLShader_tp_new(&MGLShader_Type, 0, 0);
+	auto  self = (MGLShader *)MGLShader_tp_new(&MGLShader_Type, 0, 0);
 	return self;
 }
 
@@ -150,7 +150,7 @@ void MGLShader_Invalidate(MGLShader * shader) {
 	printf("MGLShader_Invalidate %p\n", shader);
 	#endif
 
-	const GLMethods & gl = shader->context->gl;
+	auto && gl = shader->context->gl;
 	gl.DeleteShader(shader->shader_obj);
 
 	Py_DECREF(shader->source);
@@ -162,11 +162,11 @@ void MGLShader_Invalidate(MGLShader * shader) {
 }
 
 void MGLShader_Compile(MGLShader * shader) {
-	const GLMethods & gl = shader->context->gl;
+	auto && gl = shader->context->gl;
 
-	const char * source = PyUnicode_AsUTF8(shader->source);
+	auto  source = PyUnicode_AsUTF8(shader->source);
 
-	int obj = gl.CreateShader(shader->shader_type);
+	auto obj = gl.CreateShader(shader->shader_type);
 
 	if (!obj) {
 		MGLError_Set("cannot create shader");
@@ -180,11 +180,11 @@ void MGLShader_Compile(MGLShader * shader) {
 	gl.GetShaderiv(obj, GL_COMPILE_STATUS, &compiled);
 
 	if (!compiled) {
-		const char * message = "GLSL Compiler failed";
-		const char * title = SHADER_NAME[shader->shader_slot];
-		const char * underline = SHADER_NAME_UNDERLINE[shader->shader_slot];
+		auto  message = "GLSL Compiler failed";
+		auto title = SHADER_NAME[shader->shader_slot];
+		auto underline = SHADER_NAME_UNDERLINE[shader->shader_slot];
 
-		int log_len = 0;
+		auto log_len = 0;
 		gl.GetShaderiv(obj, GL_INFO_LOG_LENGTH, &log_len);
 
 		char * log = new char[log_len];

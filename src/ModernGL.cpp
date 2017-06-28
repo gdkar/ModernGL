@@ -28,10 +28,10 @@
 #include "GLContext.hpp"
 
 MGLContext * create_standalone_context(PyObject * self, PyObject * args) {
-	int width;
-	int height;
+	auto width = 0;
+	auto height = 0;
 
-	int args_ok = PyArg_ParseTuple(
+	auto args_ok = PyArg_ParseTuple(
 		args,
 		"II",
 		&width,
@@ -42,7 +42,7 @@ MGLContext * create_standalone_context(PyObject * self, PyObject * args) {
 		return 0;
 	}
 
-	MGLContext * ctx = MGLContext_New();
+	auto ctx = MGLContext_New();
 
 	ctx->gl_context = CreateGLContext(width, height);
 	ctx->wireframe = false;
@@ -63,7 +63,7 @@ MGLContext * create_standalone_context(PyObject * self, PyObject * args) {
 }
 
 MGLContext * create_context(PyObject * self) {
-	MGLContext * ctx = MGLContext_New();
+	auto ctx = MGLContext_New();
 
 	ctx->gl_context = LoadCurrentGLContext();
 	ctx->wireframe = false;
@@ -497,7 +497,7 @@ PyModuleDef MGL_moduledef = {
 };
 
 extern "C" PyObject * PyInit_mgl() {
-	PyObject * module = PyModule_Create(&MGL_moduledef);
+	auto module = PyModule_Create(&MGL_moduledef);
 
 	if (!MGL_InitializeModule(module)) {
 		return 0;

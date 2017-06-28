@@ -72,23 +72,23 @@ PIXELFORMATDESCRIPTOR pfd = {
 };
 
 GLContext LoadCurrentGLContext() {
-	GLContext context = {};
+	auto context = GLContext{};
 
-	HGLRC hrc = wglGetCurrentContext();
+	auto hrc = wglGetCurrentContext();
 
 	if (!hrc) {
 		MGLError_Set("cannot detect context");
 		return context;
 	}
 
-	HDC hdc = wglGetCurrentDC();
+	auto hdc = wglGetCurrentDC();
 
 	if (!hdc) {
 		MGLError_Set("cannot detect device content");
 		return context;
 	}
 
-	HWND hwnd = WindowFromDC(hdc);
+	auto hwnd = WindowFromDC(hdc);
 
 	if (!hwnd) {
 		MGLError_Set("cannot detect window");
@@ -549,23 +549,23 @@ void DestroyGLContext(const GLContext & context) {
 typedef GLXContext (* GLXCREATECONTEXTATTRIBSARBPROC)(Display * display, GLXFBConfig config, GLXContext context, Bool direct, const int * attribs);
 
 GLContext LoadCurrentGLContext() {
-	GLContext context = {};
+	auto context = GLContext{};
 
-	Display * dpy = glXGetCurrentDisplay();
+	auto dpy = glXGetCurrentDisplay();
 
 	if (!dpy) {
 		MGLError_Set("cannot detect display");
 		return context;
 	}
 
-	Window win = glXGetCurrentDrawable();
+	auto win = glXGetCurrentDrawable();
 
 	if (!win) {
 		MGLError_Set("cannot detect window");
 		return context;
 	}
 
-	GLXContext ctx = glXGetCurrentContext();
+	auto ctx = glXGetCurrentContext();
 
 	if (!ctx) {
 		MGLError_Set("cannot detect OpenGL context");
@@ -586,9 +586,9 @@ int SilentXErrorHandler(Display * d, XErrorEvent * e) {
 }
 
 GLContext CreateGLContext(int width, int height) {
-	GLContext context = {};
+	auto context = GLContext{};
 
-	Display * dpy = XOpenDisplay(0);
+	auto dpy = XOpenDisplay(0);
 
 	if (!dpy) {
 		dpy = XOpenDisplay(":0.0");
@@ -599,9 +599,9 @@ GLContext CreateGLContext(int width, int height) {
 		return context;
 	}
 
-	int nelements = 0;
+	auto nelements = 0;
 
-	GLXFBConfig * fbc = glXChooseFBConfig(dpy, DefaultScreen(dpy), 0, &nelements);
+	auto fbc = glXChooseFBConfig(dpy, DefaultScreen(dpy), 0, &nelements);
 
 	if (!fbc) {
 		MGLError_Set("cannot read the display configuration");
@@ -619,7 +619,7 @@ GLContext CreateGLContext(int width, int height) {
 		None,
 	};
 
-	XVisualInfo * vi = glXChooseVisual(dpy, DefaultScreen(dpy), attributeList);
+	auto vi = glXChooseVisual(dpy, DefaultScreen(dpy), attributeList);
 
 	if (!vi) {
 		XCloseDisplay(dpy);
@@ -633,7 +633,7 @@ GLContext CreateGLContext(int width, int height) {
 	swa.border_pixel = 0;
 	swa.event_mask = StructureNotifyMask;
 
-	Window win = XCreateWindow(dpy, RootWindow(dpy, vi->screen), 0, 0, width, height, 0, vi->depth, InputOutput, vi->visual, CWBorderPixel | CWColormap | CWEventMask, &swa);
+	auto win = XCreateWindow(dpy, RootWindow(dpy, vi->screen), 0, 0, width, height, 0, vi->depth, InputOutput, vi->visual, CWBorderPixel | CWColormap | CWEventMask, &swa);
 
 	if (!win) {
 		XCloseDisplay(dpy);
@@ -644,14 +644,14 @@ GLContext CreateGLContext(int width, int height) {
 
 	// XMapWindow(dpy, win);
 
-	GLXCREATECONTEXTATTRIBSARBPROC glXCreateContextAttribsARB = (GLXCREATECONTEXTATTRIBSARBPROC)glXGetProcAddress((const GLubyte *)"glXCreateContextAttribsARB");
+	auto glXCreateContextAttribsARB = (GLXCREATECONTEXTATTRIBSARBPROC)glXGetProcAddress((const GLubyte *)"glXCreateContextAttribsARB");
 
-	GLXContext ctx = 0;
+	auto ctx = GLXContext{};
 
 	XSetErrorHandler(SilentXErrorHandler);
 
 	if (glXCreateContextAttribsARB) {
-		for (int i = 0; i < versions; ++i) {
+		for (auto i = 0; i < versions; ++i) {
 			int attribs[] = {
 				GLX_CONTEXT_PROFILE_MASK, GLX_CONTEXT_CORE_PROFILE_BIT,
 				GLX_CONTEXT_MAJOR_VERSION, version[i].major,
@@ -681,7 +681,7 @@ GLContext CreateGLContext(int width, int height) {
 
 	XSetErrorHandler(0);
 
-	int make_current = glXMakeCurrent(dpy, win, ctx);
+	auto make_current = glXMakeCurrent(dpy, win, ctx);
 
 	if (!make_current) {
 		glXDestroyContext(dpy, ctx);
