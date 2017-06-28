@@ -3,7 +3,7 @@
 #include <cstdarg>
 
 PyObject * MGLError_tp_new(PyTypeObject * type, PyObject * args, PyObject * kwargs) {
-	MGLError * self = (MGLError *)type->tp_alloc(type, 0);
+	auto self = (MGLError *)type->tp_alloc(type, 0);
 
 	#ifdef MGL_VERBOSE
 	printf("MGLError_tp_new %p\n", self);
@@ -30,7 +30,7 @@ void MGLError_tp_dealloc(MGLError * self) {
 	printf("MGLError_tp_dealloc %p\n", self);
 	#endif
 
-	PyTypeObject * super = Py_TYPE(self)->tp_base;
+	auto super = Py_TYPE(self)->tp_base;
 	return super->tp_dealloc((PyObject *)self);
 }
 
@@ -112,12 +112,12 @@ PyTypeObject MGLError_Type = {
 };
 
 void MGLError_SetTrace(const char * filename, const char * function, int line, const char * format, ...) {
-	MGLError * error = (MGLError *)MGLError_tp_new(&MGLError_Type, 0, 0);
+	auto error = (MGLError *)MGLError_tp_new(&MGLError_Type, 0, 0);
 
 	va_list va_args;
 	va_start(va_args, format);
 	error->args = PyTuple_New(1);
-	PyObject * message = PyUnicode_FromFormatV(format, va_args);
+	auto message = PyUnicode_FromFormatV(format, va_args);
 	PyTuple_SET_ITEM(error->args, 0, message);
 	va_end(va_args);
 
@@ -125,7 +125,7 @@ void MGLError_SetTrace(const char * filename, const char * function, int line, c
 }
 
 void MGLError_SetTrace(const char * filename, const char * function, int line, PyObject * message) {
-	MGLError * error = (MGLError *)MGLError_tp_new(&MGLError_Type, 0, 0);
+	auto error = (MGLError *)MGLError_tp_new(&MGLError_Type, 0, 0);
 
 	error->filename = filename;
 	error->function = function;

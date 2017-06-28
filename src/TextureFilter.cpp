@@ -3,7 +3,7 @@
 #include "Error.hpp"
 
 PyObject * MGLTextureFilter_tp_new(PyTypeObject * type, PyObject * args, PyObject * kwargs) {
-	MGLTextureFilter * self = (MGLTextureFilter *)type->tp_alloc(type, 0);
+	auto self = (MGLTextureFilter *)type->tp_alloc(type, 0);
 
 	#ifdef MGL_VERBOSE
 	printf("MGLTextureFilter_tp_new %p\n", self);
