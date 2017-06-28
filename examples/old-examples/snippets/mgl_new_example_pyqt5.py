@@ -1,16 +1,20 @@
+import math
 import struct
+import random
+import sys
+import PyQt5.Qt as Q, PyQt5.QtCore, PyQt5.QtGui, PyQt5.QtWidgets
+import numpy as np
 
 import ModernGL
-from PyQt5 import QtOpenGL, QtWidgets
 
 
-class QGLControllerWidget(QtOpenGL.QGLWidget):
-    def __init__(self):
-        fmt = QtOpenGL.QGLFormat()
-        fmt.setVersion(3, 3)
-        fmt.setProfile(QtOpenGL.QGLFormat.CoreProfile)
-        fmt.setSampleBuffers(True)
-        super(QGLControllerWidget, self).__init__(fmt, None)
+class QOpenGLControllerWidget(Q.QOpenGLWidget):
+    def __init__(self, *args, **kwargs):
+        fmt = Q.QSurfaceFormat()
+        fmt.setVersion(4,5)
+        fmt.setProfile(fmt.CoreProfile)
+        fmt.setOption(fmt.DebugContext)
+        super(QOpenGLControllerWidget,self).__init__(*args, **kwargs)
 
     def initializeGL(self):
         self.ctx = ModernGL.create_context()
@@ -41,9 +45,24 @@ class QGLControllerWidget(QtOpenGL.QGLWidget):
         self.vao.render()
         self.ctx.finish()
 
+    def resizeGL(self,w,h):
+        super().resizeGL(w,h)
 
-app = QtWidgets.QApplication([])
-window = QGLControllerWidget()
-window.move(QtWidgets.QDesktopWidget().rect().center() - window.rect().center())
-window.show()
-app.exec_()
+fmt = Q.QSurfaceFormat.defaultFormat()
+fmt.setVersion(4,5)
+fmt.setProfile(fmt.CoreProfile)
+fmt.setOption(fmt.DebugContext)
+Q.QSurfaceFormat.setDefaultFormat(fmt)
+del fmt
+Q.QCoreApplication.setAttribute(Q.Qt.AA_ShareOpenGLContexts)
+
+app = Q.QApplication([])
+
+win = Q.QMainWindow()
+wid = QOpenGLControllerWidget(parent=win)
+win.setCentralWidget(wid)
+win.move(Q.QDesktopWidget().rect().center() - win.rect().center())
+win.show()
+
+sys.exit(app.exec_())
+
