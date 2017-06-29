@@ -1,20 +1,17 @@
+from common import *
+import math
 import struct
+import random
+import sys
+import PyQt5.Qt as Q, PyQt5.QtCore, PyQt5.QtGui, PyQt5.QtWidgets
+import numpy as np
 
 import ModernGL
 from PyQt5 import QtOpenGL, QtWidgets
 
-
-class QGLControllerWidget(QtOpenGL.QGLWidget):
-    def __init__(self):
-        fmt = QtOpenGL.QGLFormat()
-        fmt.setVersion(3, 3)
-        fmt.setProfile(QtOpenGL.QGLFormat.CoreProfile)
-        fmt.setSampleBuffers(True)
-        super(QGLControllerWidget, self).__init__(fmt, None)
-
+class HelloWorldWidget(QOpenGLControllerWidget):
     def initializeGL(self):
-        self.ctx = ModernGL.create_context()
-
+        super().initializeGL()
         prog = self.ctx.program([
             self.ctx.vertex_shader('''
                 #version 330
@@ -40,14 +37,9 @@ class QGLControllerWidget(QtOpenGL.QGLWidget):
         self.vao = self.ctx.simple_vertex_array(prog, vbo, ['vert'])
 
     def paintGL(self):
-        self.ctx.viewport = (0, 0, self.width(), self.height())
-        self.ctx.clear(0.9, 0.9, 0.9)
+        super().paintGL()
         self.vao.render()
         self.ctx.finish()
 
 
-app = QtWidgets.QApplication([])
-window = QGLControllerWidget()
-window.move(QtWidgets.QDesktopWidget().rect().center() - window.rect().center())
-window.show()
-app.exec_()
+do_main( HelloWorldWidget)

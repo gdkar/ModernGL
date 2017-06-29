@@ -1,3 +1,4 @@
+from common import *
 import math
 import struct
 import random
@@ -9,21 +10,17 @@ import ModernGL
 
 # Window & Context
 
-class QOpenGLControllerWidget(Q.QOpenGLWidget):
+class ParticleSystem2Widget(QOpenGLControllerWidget):
     def __init__(self, *args, **kwargs):
-        fmt = Q.QSurfaceFormat()
-        fmt.setVersion(4,5)
-        fmt.setProfile(fmt.CoreProfile)
-        fmt.setOption(fmt.DebugContext)
-        super(QOpenGLControllerWidget,self).__init__(*args, **kwargs)
+        super(ParticleSystem2Widget,self).__init__(*args, **kwargs)
         self.setMouseTracking(True)
-        self.setFormat(fmt)
         self.timer = Q.QTimer()
         self.timer.setInterval(1000/60)
         self.timer.setTimerType(Q.Qt.PreciseTimer)
         self.timer.timeout.connect(self.update)
         self.timer.start()
         self._mouse_pos = ( 0, 0)
+
     def particle(self):
         a = random.uniform(0.0, math.pi * 2.0)
         r = random.uniform(0.0, 1.0)
@@ -31,7 +28,8 @@ class QOpenGLControllerWidget(Q.QOpenGLWidget):
         return struct.pack('2f2f', cx, cy, cx + math.cos(a) * r, cy + math.sin(a) * r)
 
     def initializeGL(self):
-        self.ctx = ctx = ModernGL.create_context()
+        super().initializeGL()
+        ctx = self.ctx
         self.prog = prog = ctx.program([
             ctx.vertex_shader('''
                 #version 330
@@ -102,25 +100,5 @@ class QOpenGLControllerWidget(Q.QOpenGLWidget):
         evt.ignore()
 #        super().mouseMoveEvent(evt)
 
-    def resizeGL(self,w,h):
-        super().resizeGL(w,h)
 
-
-
-fmt = Q.QSurfaceFormat.defaultFormat()
-fmt.setVersion(4,5)
-fmt.setProfile(fmt.CoreProfile)
-fmt.setOption(fmt.DebugContext)
-Q.QSurfaceFormat.setDefaultFormat(fmt)
-del fmt
-Q.QCoreApplication.setAttribute(Q.Qt.AA_ShareOpenGLContexts)
-
-app = Q.QApplication([])
-
-win = Q.QMainWindow()
-wid = QOpenGLControllerWidget(parent=win)
-win.setCentralWidget(wid)
-win.move(Q.QDesktopWidget().rect().center() - win.rect().center())
-win.show()
-
-sys.exit(app.exec_())
+do_main( ParticleSystem2Widget )

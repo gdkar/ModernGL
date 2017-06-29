@@ -1,3 +1,4 @@
+from common import *
 import math
 import struct
 import random
@@ -8,16 +9,10 @@ import numpy as np
 import ModernGL
 
 
-class QOpenGLControllerWidget(Q.QOpenGLWidget):
-    def __init__(self, *args, **kwargs):
-        fmt = Q.QSurfaceFormat()
-        fmt.setVersion(4,5)
-        fmt.setProfile(fmt.CoreProfile)
-        fmt.setOption(fmt.DebugContext)
-        super(QOpenGLControllerWidget,self).__init__(*args, **kwargs)
-
+class Texture3DWidget(QOpenGLControllerWidget):
     def initializeGL(self):
-        self.ctx = ctx = ModernGL.create_context()
+        super().initializeGL()
+        ctx = self.ctx
         prog = ctx.program([
             ctx.vertex_shader('''
                 #version 450
@@ -69,27 +64,7 @@ class QOpenGLControllerWidget(Q.QOpenGLWidget):
         texture.use()
 
     def paintGL(self):
-        ctx = self.ctx
-        ctx.viewport = (0, 0, self.width(), self.height())
-        ctx.clear(0.9, 0.9, 0.9)
+        super().paintGL()
         self.vao.render(ModernGL.TRIANGLE_STRIP)
 
-    def resizeGL(self,w,h):
-        super().resizeGL(w,h)
-
-fmt = Q.QSurfaceFormat.defaultFormat()
-fmt.setVersion(4,5)
-fmt.setProfile(fmt.CoreProfile)
-fmt.setOption(fmt.DebugContext)
-Q.QSurfaceFormat.setDefaultFormat(fmt)
-Q.QCoreApplication.setAttribute(Q.Qt.AA_ShareOpenGLContexts)
-
-app = Q.QApplication([])
-
-win = Q.QMainWindow()
-wid = QOpenGLControllerWidget(parent=win)
-win.setCentralWidget(wid)
-win.move(Q.QDesktopWidget().rect().center() - win.rect().center())
-win.show()
-
-sys.exit(app.exec_())
+do_main( Texture3DWidget )

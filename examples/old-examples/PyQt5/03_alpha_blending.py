@@ -1,21 +1,22 @@
+from common import *
+import math
 import struct
+import random
+import sys
+import PyQt5.Qt as Q, PyQt5.QtCore, PyQt5.QtGui, PyQt5.QtWidgets
+import numpy as np
 
 import ModernGL
 from PyQt5 import QtCore, QtOpenGL, QtWidgets
 
 
-class QGLControllerWidget(QtOpenGL.QGLWidget):
-    def __init__(self):
-        fmt = QtOpenGL.QGLFormat()
-        fmt.setVersion(3, 3)
-        fmt.setProfile(QtOpenGL.QGLFormat.CoreProfile)
-        fmt.setSampleBuffers(True)
-        self.timer = QtCore.QElapsedTimer()
-        super(QGLControllerWidget, self).__init__(fmt, None)
+class AlphaBlendingWidget(QOpenGLControllerWidget):
+    def __init__(self, *args, **kwargs):
+        super(AlphaBlendingWidget,self).__init__(*args, **kwargs)
+        self.timer = Q.QElapsedTimer()
 
     def initializeGL(self):
-        self.ctx = ModernGL.create_context()
-
+        super().initializeGL()
         prog = self.ctx.program([
             self.ctx.vertex_shader('''
                 #version 330
@@ -62,8 +63,7 @@ class QGLControllerWidget(QtOpenGL.QGLWidget):
         self.timer.restart()
 
     def paintGL(self):
-        self.ctx.viewport = (0, 0, self.width(), self.height())
-        self.ctx.clear(0.9, 0.9, 0.9)
+        super().paintGL()
         self.scale.value = (self.height() / self.width() * 0.75, 0.75)
         self.rotation.value = self.timer.elapsed() / 1000
         self.ctx.enable(ModernGL.BLEND)
@@ -71,9 +71,4 @@ class QGLControllerWidget(QtOpenGL.QGLWidget):
         self.ctx.finish()
         self.update()
 
-
-app = QtWidgets.QApplication([])
-window = QGLControllerWidget()
-window.move(QtWidgets.QDesktopWidget().rect().center() - window.rect().center())
-window.show()
-app.exec_()
+do_main( AlphaBlendingWidget)

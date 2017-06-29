@@ -1,23 +1,24 @@
 import os
-import struct
 
 import ModernGL
 from PIL import Image
-from PyQt5 import QtCore, QtOpenGL, QtWidgets
+from common import *
+import math
+import struct
+import random
+import sys
+import PyQt5.Qt as Q, PyQt5.QtCore, PyQt5.QtGui, PyQt5.QtWidgets
+import numpy as np
 
 
-class QGLControllerWidget(QtOpenGL.QGLWidget):
-    def __init__(self):
-        fmt = QtOpenGL.QGLFormat()
-        fmt.setVersion(3, 3)
-        fmt.setProfile(QtOpenGL.QGLFormat.CoreProfile)
-        fmt.setSampleBuffers(True)
-        self.timer = QtCore.QElapsedTimer()
+class TexturesAlphaWidget(QOpenGLControllerWidget):
+    def __init__(self, *args, **kwargs):
+        super(TexturesAlphaWidget,self).__init__(*args, **kwargs)
+        self.timer = Q.QElapsedTimer()
         self.timer.restart()
-        super(QGLControllerWidget, self).__init__(fmt, None)
 
     def initializeGL(self):
-        self.ctx = ModernGL.create_context()
+        super().initializeGL()
 
         img = Image.open(os.path.join(os.path.dirname(__file__), '..', 'data', 'noise.jpg'))
         img = img.convert('L')
@@ -82,9 +83,4 @@ class QGLControllerWidget(QtOpenGL.QGLWidget):
         self.ctx.finish()
         self.update()
 
-
-app = QtWidgets.QApplication([])
-window = QGLControllerWidget()
-window.move(QtWidgets.QDesktopWidget().rect().center() - window.rect().center())
-window.show()
-app.exec_()
+do_main( TexturesAlphaWidget)

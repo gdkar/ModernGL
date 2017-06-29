@@ -1,3 +1,4 @@
+from common import *
 import math
 from math import sin, cos
 import struct
@@ -29,13 +30,9 @@ def create_brick_texture(size):
 
 
 
-class QOpenGLControllerWidget(Q.QOpenGLWidget):
+class BrickTexture3DWidget(QOpenGLControllerWidget):
     def __init__(self, *args, **kwargs):
-        fmt = Q.QSurfaceFormat()
-        fmt.setVersion(4,5)
-        fmt.setProfile(fmt.CoreProfile)
-        fmt.setOption(fmt.DebugContext)
-        super(QOpenGLControllerWidget,self).__init__(*args, **kwargs)
+        super(BrickTexture3DWidget,self).__init__(*args, **kwargs)
         self._retimer = Q.QTimer()
         self._retimer.setTimerType(Q.Qt.PreciseTimer)
         self._retimer.setInterval(1000//60)
@@ -125,19 +122,5 @@ class QOpenGLControllerWidget(Q.QOpenGLWidget):
         ctx.clear(0.9, 0.9, 0.9)
         self.vao.render()
 
-fmt = Q.QSurfaceFormat.defaultFormat()
-fmt.setVersion(4,5)
-fmt.setProfile(fmt.CoreProfile)
-fmt.setOption(fmt.DebugContext)
-Q.QSurfaceFormat.setDefaultFormat(fmt)
-Q.QCoreApplication.setAttribute(Q.Qt.AA_ShareOpenGLContexts)
 
-app = Q.QApplication([])
-
-win = Q.QMainWindow()
-wid = QOpenGLControllerWidget(parent=win)
-win.setCentralWidget(wid)
-win.move(Q.QDesktopWidget().rect().center() - win.rect().center())
-win.show()
-
-sys.exit(app.exec_())
+do_main( BrickTexture3DWidget)
