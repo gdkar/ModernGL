@@ -1375,7 +1375,7 @@ MGLFramebuffer * MGLContext_framebuffer(MGLContext * self, PyObject * args) {
 	auto samples = 0;
 
 	auto color_attachments_len = (int)PyTuple_GET_SIZE(color_attachments);
-
+    auto new_depth_attachment = false;
 	if (!color_attachments_len) {
 		MGLError_Set("the color_attachments must not be empty");
 		return 0;

@@ -91,7 +91,6 @@ void * LoadMethod(const char * method) {
 
 #endif
 
-=======
 void *GLMethods::GetProcAddress(const char *method) const {
     static const char prefix[] = PREFIX;
     if(auto proc = LoadMethod(method)) {
